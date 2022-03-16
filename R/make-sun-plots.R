@@ -1,6 +1,6 @@
 #' Daylight savings time and sunrises/sunsets in Australia =====================
 #' Will Mackey, recreating this nice chart by Andy Woodruff via Vox: 
-#' https://twitter.com/voxdotcom/status/1503819992822951945?s=20&t=S7m4FMTnyA-8fGl9lpOwDQ
+#' https://twitter.com/voxdotcom/status/1503819992822951945
 
 
 # SET UP =======================================================================
@@ -40,9 +40,6 @@ dst_ends <- ymd("2022-04-03")
 
 # BUILD DATA ===================================================================
 
-
-
-
 ## Australia state geography ---------------------------------------------------
 aus <- read_absmap("state2021", remove_year_suffix = TRUE, 
                    export_dir = "data") %>% 
@@ -65,13 +62,16 @@ base_grid <- aus %>%
           join = st_within)
   
 ### Sense-check the grid ----
-plot_grid_all <- aus %>% 
+plot_grid <- aus %>% 
   ggplot() +
   geom_sf() +
-  geom_sf(data = base_grid, fill = NA) + 
+  geom_sf(data = base_grid, 
+          aes(geometry = geometry,
+              colour = state_name),
+          fill = NA) + 
   theme_void()
 
-ggsave("charts/grid_all.png", plot_grid_all, height = 10, width = 10)
+ggsave("charts/grid_all.png", plot_grid, height = 10, width = 10)
 
 
 ## Get timezone for each cell --------------------------------------------------
@@ -224,7 +224,7 @@ p_always_dst_sunset <- plot_sun(subtitle = "Number of days with sunset after 6:3
 
 layout <- c(
   # legend:
-  area(t = 1, b = 2,   l =  7, r = 12),
+  area(t = 0, b = 2,   l =  7, r = 12),
   # plot current:
   area(t = 3, b = 12,   l =  1, r = 10),
   area(t = 3, b = 12,   l =  9, r = 18),
@@ -247,13 +247,14 @@ p <- p_leg +
   p_always_dst_sunrise + p_always_dst_sunset +
   plot_layout(design = layout) + 
   plot_annotation(
-    title = "**What if Australia stopped<br>changing its clocks?**<br>", 
+    title = "**What if <span style='color:#A02226'>Australia</span> stopped<br>changing its clocks?**<br>", 
     theme = theme(plot.title = element_markdown(size = 30, hjust = 0.5),
                   plot.subtitle = element_text(size = 14, hjust = 0.5)),
-                  caption = 'Source: Will Mackey, recreation of Andy Woodruff, via {lutz}, {suncalc}, {sf} and other R packages. Note: quick analysis; no accuracy guaranteed.')
+                  caption = "Source: Will Mackey, recreation of Andy Woodruff, via {lutz}, {suncalc}, {sf} and other R packages. Note: quick analysis; no accuracy guaranteed.")
 
 ## Combine final patchwork plot ------------------------------------------------
 ggsave('charts/australian-sun.png', plot = p,
        height = 13, width = 10)
  
 # end, yayyy ===================================================================
+
