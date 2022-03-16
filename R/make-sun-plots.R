@@ -71,7 +71,7 @@ plot_grid <- aus %>%
           fill = NA) + 
   theme_void()
 
-ggsave("charts/grid_all.png", plot_grid, height = 10, width = 10)
+ggsave("charts/grid_aus.png", plot_grid, height = 10, width = 10)
 
 
 ## Get timezone for each cell --------------------------------------------------
